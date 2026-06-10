@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+.env
+.venv/
+env.bak/
+venv.bak/
+
+# Streamlit
+.streamlit/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Note: We are deliberately NOT ignoring the dataset and models folder
+# because the project relies on them and they might be small enough.
+# But if any single file is >100MB, GitHub will reject it.
