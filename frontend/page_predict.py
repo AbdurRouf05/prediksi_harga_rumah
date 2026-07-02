@@ -38,6 +38,18 @@ def render_predict(models: dict, nama_kota: str):
         
         with cols[i % 3]:
             label = feature.get('label', name)
+            
+            # Jangan disingkat (override label)
+            label_map = {
+                'LB': 'Luas Bangunan (m²)', 
+                'LT': 'Luas Tanah (m²)', 
+                'KT': 'Kamar Tidur', 
+                'KM': 'Kamar Mandi', 
+                'GRS': 'Garasi'
+            }
+            if name in label_map:
+                label = label_map[name]
+                
             if ftype == 'numeric':
                 min_val = float(feature.get('min', 0))
                 max_val = float(feature.get('max', 10000))

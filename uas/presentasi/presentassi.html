@@ -1,0 +1,503 @@
+<!DOCTYPE html><html lang="id"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Prediksi Harga Rumah - Machine Learning</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700&amp;family=DM+Sans:wght@400;500&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* 1. RESET & BASE STYLES */
+        * { box-sizing: border-box; }
+        body {
+            background-color: #0f172a;
+            display: grid;
+            gap: 40px;
+            grid-template-columns: 1fr;
+            margin: 0;
+            min-height: 100vh;
+            padding: 40px 0;
+            place-items: center;
+        }
+
+        /* 2. SLIDE CONTAINER */
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #0a1128;
+            color: #f8fafc;
+            font-family: 'DM Sans', sans-serif;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 60px;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Background Design: Abstract Shapes */
+        .slide-container::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+            z-index: 0;
+        }
+
+        .slide-container::after {
+            content: '';
+            position: absolute;
+            bottom: -5%;
+            left: -5%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(45, 212, 191, 0.1) 0%, transparent 70%);
+            z-index: 0;
+        }
+
+        .slide-container > * { position: relative; z-index: 1; }
+
+        /* 3. TYPOGRAPHY */
+        h1, h2, h3 { font-family: 'Urbanist', sans-serif; margin: 0; }
+        h1 { font-size: 72px; line-height: 1.1; font-weight: 700; color: #fff; }
+        .slide-title { font-size: 42px; margin-bottom: 40px; color: #2dd4bf; text-transform: uppercase; letter-spacing: 2px; }
+        h3 { font-size: 32px; color: #6366f1; margin-bottom: 20px; }
+        p, li { font-size: 20px; line-height: 1.5; color: #94a3b8; }
+        
+        .subtitle { font-size: 28px; color: #cbd5e1; margin-top: 20px; }
+
+        /* 4. LAYOUTS */
+        .content-area { display: flex; flex-direction: column; flex-grow: 1; justify-content: center; width: 100%; }
+        
+        .title-layout { text-align: center; }
+        
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; width: 100%; align-items: center; }
+
+        .tiled-content { display: flex; gap: 30px; width: 100%; }
+        .tile { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 40px; border-radius: 20px; text-align: center; }
+        .tile .icon { font-size: 50px; color: #2dd4bf; margin-bottom: 25px; }
+
+        .bullet-list { list-style: none; padding: 0; }
+        .bullet-list li { position: relative; padding-left: 45px; margin-bottom: 25px; }
+        .bullet-list li i { position: absolute; left: 0; top: 5px; color: #6366f1; font-size: 24px; }
+
+        .highlight-numbers-layout { display: grid; grid-template-columns: 1fr 1.5fr; gap: 50px; align-items: center; }
+        .number-circle { width: 300px; height: 300px; border: 8px solid #2dd4bf; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto; }
+        .number { font-size: 100px; font-weight: 700; color: #fff; line-height: 1; }
+        .number-label { font-size: 24px; color: #2dd4bf; font-weight: 600; }
+
+        .timeline-layout { display: flex; justify-content: space-between; position: relative; width: 100%; margin-top: 50px; }
+        .timeline-line { position: absolute; top: 50%; left: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.1); z-index: 0; }
+        .timeline-item { width: 22%; position: relative; z-index: 1; text-align: center; }
+        .timeline-dot { width: 24px; height: 24px; background: #6366f1; border: 4px solid #0a1128; border-radius: 50%; margin: 15px auto; }
+        
+        .qa-layout { text-align: center; }
+
+        /* Custom UI Mockup for Dashboard (Replacing Stock Images) */
+        .ui-mockup {
+            background: #0f172a;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            height: 420px;
+            display: flex;
+            flex-direction: column;
+        }
+        .ui-header {
+            background: #1e293b;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .ui-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .ui-dot-red { background: #ef4444; }
+        .ui-dot-yellow { background: #eab308; }
+        .ui-dot-green { background: #22c55e; }
+        .ui-title {
+            color: #94a3b8;
+            font-size: 13px;
+            margin-left: 15px;
+            font-family: monospace;
+        }
+        .ui-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: 24px;
+            gap: 20px;
+            flex-grow: 1;
+        }
+        .ui-input-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .ui-control {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .ui-label {
+            font-size: 12px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .ui-slider-track {
+            height: 6px;
+            background: #334155;
+            border-radius: 3px;
+            position: relative;
+        }
+        .ui-slider-fill {
+            height: 100%;
+            background: #2dd4bf;
+            border-radius: 3px;
+            width: 65%;
+        }
+        .ui-slider-thumb {
+            width: 14px;
+            height: 14px;
+            background: #fff;
+            border: 2px solid #2dd4bf;
+            border-radius: 50%;
+            position: absolute;
+            top: -4px;
+            left: 65%;
+            transform: translateX(-50%);
+        }
+        .ui-output-panel {
+            background: rgba(99, 102, 241, 0.05);
+            border: 1px dashed rgba(99, 102, 241, 0.3);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+        .ui-badge {
+            background: rgba(45, 212, 191, 0.1);
+            color: #2dd4bf;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .ui-price {
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+            margin: 10px 0;
+            text-shadow: 0 0 15px rgba(45, 212, 191, 0.3);
+        }
+
+        /* Stylized Comparison Grid for Slide 2 */
+        .comparison-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            width: 100%;
+        }
+        .comparison-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 30px;
+        }
+        .comparison-card.negative {
+            border-left: 4px solid #ef4444;
+        }
+        .comparison-card.positive {
+            border-left: 4px solid #2dd4bf;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .card-header i {
+            font-size: 28px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Slide 1: Title Slide -->
+<div class="slide-container" id="slide1">
+    <div class="content-area title-layout">
+        <h1 style="color: #2dd4bf;">Sistem Prediksi<br><span>Harga Rumah</span></h1>
+        <p class="subtitle">Analisis Berbasis Machine Learning untuk Area<br>Jakarta, Surabaya, dan Lumajang</p>
+        <div style="margin-top: 50px; color: #6366f1; font-weight: 600; letter-spacing: 2px;">LAPORAN PROYEK AKHIR</div>
+    </div>
+</div>
+
+<!-- Slide 2: Pendahuluan -->
+<div class="slide-container" id="slide2">
+    <h2 class="slide-title">Latar Belakang</h2>
+    <div class="content-area">
+        <div class="two-column">
+            <div>
+                <h3>Subjektivitas Pasar</h3>
+                <p>Menentukan harga properti seringkali menjadi proses yang rumit dan sangat subjektif, berisiko merugikan penjual maupun pembeli.</p>
+                <p style="margin-top: 20px;">Memanfaatkan data historis yang melimpah di era digital untuk menciptakan estimasi harga yang adil, objektif, dan berbasis data.</p>
+            </div>
+            
+            <div class="comparison-container">
+                <div class="comparison-card negative">
+                    <div class="card-header">
+                        <i class="fa-solid fa-circle-xmark" style="color: #ef4444;"></i>
+                        <h4 style="margin: 0; font-size: 22px; color: #fff;">Cara Lama</h4>
+                    </div>
+                    <p style="font-size: 16px;">Bergantung opini subjektif, spekulasi broker, dan emosi sesaat tanpa landasan statistik.</p>
+                </div>
+                <div class="comparison-card positive">
+                    <div class="card-header">
+                        <i class="fa-solid fa-circle-check" style="color: #2dd4bf;"></i>
+                        <h4 style="margin: 0; font-size: 22px; color: #fff;">Cara ML</h4>
+                    </div>
+                    <p style="font-size: 16px;">Berdasarkan pola riil dari ribuan riwayat transaksi properti secara cepat dan presisi.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 3: Tujuan & Batasan -->
+<div class="slide-container" id="slide3">
+    <h2 class="slide-title">Tujuan &amp; Batasan</h2>
+    <div class="content-area">
+        <div class="tiled-content">
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-bullseye"></i></div>
+                <h3>Tujuan Utama</h3>
+                <p>Membangun model ML untuk estimasi harga &amp; Dashboard interaktif bagi pengguna awam.</p>
+            </div>
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-map-location-dot"></i></div>
+                <h3>Cakupan Area</h3>
+                <p>Jakarta, Surabaya, dan Lumajang (Representasi Kota Besar &amp; Daerah).</p>
+            </div>
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-sliders"></i></div>
+                <h3>Variabel Fisik</h3>
+                <p>Fokus pada: Luas Bangunan, Tanah, Kamar Tidur, Kamar Mandi, dan Garasi.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 4: Pengumpulan Data -->
+<div class="slide-container" id="slide4">
+    <h2 class="slide-title">Pengumpulan Data</h2>
+    <div class="content-area">
+        <div class="two-column">
+            <div class="tile" style="text-align: left;">
+                <h3 style="color: #2dd4bf;"><i class="fa-solid fa-database" style="margin-right: 15px;"></i>Data Sekunder</h3>
+                <p><strong>Jakarta &amp; Surabaya:</strong> Menggunakan dataset publik (GitHub) yang terstruktur dan siap diproses secara instan.</p>
+            </div>
+            <div class="tile" style="text-align: left;">
+                <h3 style="color: #6366f1;"><i class="fa-solid fa-robot" style="margin-right: 15px;"></i>Data Primer</h3>
+                <p><strong>Lumajang:</strong> Web Scraping mandiri menggunakan Selenium pada portal Rumah123 untuk mengatasi kelangkaan data daerah.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 5: Data Preprocessing -->
+<div class="slide-container" id="slide5">
+    <h2 class="slide-title">Data Preprocessing</h2>
+    <div class="content-area">
+        <div class="bullet-list">
+            <ul>
+                <li><i class="fa-solid fa-circle-check"></i> <strong>Handling Missing Values:</strong> Pengisian nilai default (imputasi) logis atau pembersihan record data kosong.</li>
+                <li><i class="fa-solid fa-filter"></i> <strong>Outlier Removal:</strong> Penyaringan pencilan statistik (data ekstrem yang tidak rasional) agar model lebih objektif.</li>
+                <li><i class="fa-solid fa-code"></i> <strong>Encoding &amp; Scaling:</strong> Transformasi data kategori ke numerik dan penyelarasan skala fitur agar adil.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 6: Alur Pengembangan -->
+<div class="slide-container" id="slide6">
+    <h2 class="slide-title">Alur Pengembangan</h2>
+    <div class="content-area">
+        <div class="timeline-layout">
+            <div class="timeline-line"></div>
+            <div class="timeline-item">
+                <p>Data Loading &amp; Pandas Analysis</p>
+                <div class="timeline-dot"></div>
+                <h3>Load</h3>
+            </div>
+            <div class="timeline-item">
+                <p>80% Training &amp; 20% Testing Split</p>
+                <div class="timeline-dot"></div>
+                <h3>Split</h3>
+            </div>
+            <div class="timeline-item">
+                <p>Pattern Recognition &amp; Learning</p>
+                <div class="timeline-dot"></div>
+                <h3>Train</h3>
+            </div>
+            <div class="timeline-item">
+                <p>Export .pkl via Joblib for Apps</p>
+                <div class="timeline-dot"></div>
+                <h3>Export</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 7: Model Machine Learning -->
+<div class="slide-container" id="slide7">
+    <h2 class="slide-title">Model Machine Learning</h2>
+    <div class="content-area">
+        <div class="two-column">
+            <div class="tile">
+                <i class="fa-solid fa-chart-line" style="font-size: 40px; margin-bottom: 20px; color: #94a3b8;"></i>
+                <h3>Linear Regression</h3>
+                <p>Pendekatan garis lurus konstan. Cepat dan sederhana, namun kurang adaptif untuk dinamika pasar properti yang tidak linear.</p>
+            </div>
+            <div class="tile" style="border: 2px solid #2dd4bf; background: rgba(45, 212, 191, 0.05);">
+                <i class="fa-solid fa-network-wired" style="font-size: 40px; margin-bottom: 20px; color: #2dd4bf;"></i>
+                <h3>Random Forest</h3>
+                <p>Kumpulan ratusan pohon keputusan. Sangat mahir membaca pola non-linear dan memberikan hasil estimasi yang jauh lebih stabil.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 8: Evaluasi & Akurasi -->
+<div class="slide-container" id="slide8">
+    <h2 class="slide-title">Evaluasi &amp; Akurasi</h2>
+    <div class="content-area">
+        <div class="highlight-numbers-layout">
+            <div class="number-circle">
+                <div class="number">78%</div>
+                <div class="number-label">R-Squared (R²)</div>
+            </div>
+            <div>
+                <h3>Interpretasi Model</h3>
+                <p>Skor R² sebesar 78% menunjukkan bahwa model berhasil menjelaskan mayoritas faktor utama yang memengaruhi fluktuasi harga.</p>
+                <p style="margin-top: 20px; font-style: italic;">&#34;Untuk estimasi berbasis murni variabel fisik tanpa pengaruh makro, akurasi di atas 70% sudah melampaui standar minimal industri.&#34;</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 9: Implementasi Dashboard -->
+<div class="slide-container" id="slide9">
+    <h2 class="slide-title">Dashboard Web</h2>
+    <div class="content-area">
+        <div class="two-column">
+            <div>
+                <h3>Powered by Streamlit</h3>
+                <p>Integrasi berkas `.pkl` sebagai mesin pintar di belakang layar. Website merespons parameter yang diberikan pengguna secara instan tanpa melatih ulang model.</p>
+                <p style="margin-top: 20px;">Sistem menyesuaikan skala masukan pengguna dengan normalisasi standar secara real-time demi meminimalkan error tebakan.</p>
+            </div>
+            
+            <!-- Beautiful Web Interface Simulation using HTML/CSS -->
+            <div class="ui-mockup">
+                <div class="ui-header">
+                    <span class="ui-dot ui-dot-red"></span>
+                    <span class="ui-dot ui-dot-yellow"></span>
+                    <span class="ui-dot ui-dot-green"></span>
+                    <span class="ui-title">house-price-prediction-dashboard.app</span>
+                </div>
+                <div class="ui-body">
+                    <div class="ui-input-panel">
+                        <div class="ui-control">
+                            <span class="ui-label" style="font-size: 10px;">Luas Tanah (m²)</span>
+                            <div style="font-size: 14px; font-weight: bold; color: #2dd4bf;">150 m²</div>
+                            <div class="ui-slider-track">
+                                <div class="ui-slider-fill" style="width: 70%;"></div>
+                                <div class="ui-slider-thumb" style="left: 70%;"></div>
+                            </div>
+                        </div>
+                        <div class="ui-control">
+                            <span class="ui-label" style="font-size: 10px;">Kamar Tidur</span>
+                            <div style="font-size: 14px; font-weight: bold; color: #2dd4bf;">3 Kamar</div>
+                            <div class="ui-slider-track">
+                                <div class="ui-slider-fill" style="width: 50%;"></div>
+                                <div class="ui-slider-thumb" style="left: 50%;"></div>
+                            </div>
+                        </div>
+                        <div class="ui-control">
+                            <span class="ui-label" style="font-size: 10px;">Area Lokasi</span>
+                            <div style="font-size: 13px; font-weight: bold; background: rgba(255,255,255,0.05); padding: 5px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); text-align: center;">Surabaya</div>
+                        </div>
+                    </div>
+                    <div class="ui-output-panel">
+                        <span class="ui-badge"><i class="fa-solid fa-wand-magic-sparkles" style="margin-right: 6px;"></i>Estimasi ML</span>
+                        <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase;">Hasil Prediksi</span>
+                        <div class="ui-price" style="font-size: 24px;">Rp 1,42 Miliar</div>
+                        <span style="font-size: 9px; color: #6366f1;">Tingkat Kepercayaan Model 78%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 10: Kesimpulan Proyek -->
+<div class="slide-container" id="slide10">
+    <h2 class="slide-title">Kesimpulan Proyek</h2>
+    <div class="content-area">
+        <div class="tiled-content">
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-award"></i></div>
+                <p>Random Forest terbukti paling unggul dalam akurasi prediksi harga rumah dibandingkan regresi linear.</p>
+            </div>
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-laptop-code"></i></div>
+                <p>Implementasi Dashboard Web sukses mempermudah akses model kecerdasan buatan bagi pengguna awam.</p>
+            </div>
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-spider"></i></div>
+                <p>Sistem Web Scraping berhasil memecahkan keterbatasan data wilayah terpencil seperti Lumajang.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 11: Saran Pengembangan -->
+<div class="slide-container" id="slide11">
+    <h2 class="slide-title">Saran Pengembangan</h2>
+    <div class="content-area">
+        <div class="bullet-list">
+            <ul>
+                <li><i class="fa-solid fa-location-crosshairs"></i> <strong>Koordinat GPS Presisi:</strong> Menganalisis gap nilai lahan utama jalan protokol dibanding di dalam gang.</li>
+                <li><i class="fa-solid fa-train-subway"></i> <strong>Akses Transportasi:</strong> Integrasi fitur jarak real-time menuju fasilitas stasiun, gerbang tol, dan retail hub.</li>
+                <li><i class="fa-solid fa-camera"></i> <strong>Computer Vision:</strong> Menilai kondisi fasad/eksterior bangunan menggunakan deep learning berbasis foto.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 12: Q&A -->
+<div class="slide-container" id="slide12">
+    <div class="content-area qa-layout">
+        <h1 style="color: #2dd4bf; font-size: 100px;">Terima Kasih</h1>
+        <p class="subtitle">Ada Pertanyaan?</p>
+        <div style="margin-top: 100px; display: flex; justify-content: center; gap: 40px; color: #6366f1;">
+            <span><i class="fa-solid fa-globe" style="margin-right: 10px;"></i> realestate-ml.dashboard</span>
+            <span><i class="fa-solid fa-envelope" style="margin-right: 10px;"></i> project@houseprice.ai</span>
+        </div>
+    </div>
+</div>
+
+</body></html>

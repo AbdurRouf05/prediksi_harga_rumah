@@ -35,7 +35,7 @@ def load_all_models(kota: str = 'jakarta', models_dir: str = None) -> dict:
     lr_path = os.path.join(models_dir, 'model_lr.pkl')
     if os.path.exists(lr_path):
         result['model_lr'] = joblib.load(lr_path)
-        print(f"  [LOADER] ✅ Linear Regression ({kota}) dimuat")
+        print(f"  [LOADER] [OK] Linear Regression ({kota}) dimuat")
     else:
         result['model_lr'] = None
     
@@ -43,7 +43,7 @@ def load_all_models(kota: str = 'jakarta', models_dir: str = None) -> dict:
     rf_path = os.path.join(models_dir, 'model_rf.pkl')
     if os.path.exists(rf_path):
         result['model_rf'] = joblib.load(rf_path)
-        print(f"  [LOADER] ✅ Random Forest ({kota}) dimuat")
+        print(f"  [LOADER] [OK] Random Forest ({kota}) dimuat")
     else:
         result['model_rf'] = None
     
@@ -51,7 +51,7 @@ def load_all_models(kota: str = 'jakarta', models_dir: str = None) -> dict:
     nn_path = os.path.join(models_dir, 'model_nn.h5')
     if os.path.exists(nn_path) and HAS_TENSORFLOW:
         result['model_nn'] = keras_load_model(nn_path)
-        print(f"  [LOADER] ✅ Neural Network ({kota}) dimuat")
+        print(f"  [LOADER] [OK] Neural Network ({kota}) dimuat")
     else:
         result['model_nn'] = None
     
@@ -59,16 +59,16 @@ def load_all_models(kota: str = 'jakarta', models_dir: str = None) -> dict:
     scaler_path = os.path.join(models_dir, 'scaler.pkl')
     if os.path.exists(scaler_path):
         result['scaler'] = joblib.load(scaler_path)
-        print(f"  [LOADER] ✅ Scaler ({kota}) dimuat")
+        print(f"  [LOADER] [OK] Scaler ({kota}) dimuat")
     else:
         result['scaler'] = None
-        print(f"  [LOADER] ❌ scaler.pkl ({kota}) tidak ditemukan!")
+        print(f"  [LOADER] [ERROR] scaler.pkl ({kota}) tidak ditemukan!")
     
     # 5. Load Metadata
     meta_path = os.path.join(models_dir, 'metadata.pkl')
     if os.path.exists(meta_path):
         result['metadata'] = joblib.load(meta_path)
-        print(f"  [LOADER] ✅ Metadata ({kota}) dimuat")
+        print(f"  [LOADER] [OK] Metadata ({kota}) dimuat")
     else:
         result['metadata'] = {}
         
@@ -76,7 +76,7 @@ def load_all_models(kota: str = 'jakarta', models_dir: str = None) -> dict:
     encoders_path = os.path.join(models_dir, 'encoders.pkl')
     if os.path.exists(encoders_path):
         result['encoders'] = joblib.load(encoders_path)
-        print(f"  [LOADER] ✅ Encoders ({kota}) dimuat")
+        print(f"  [LOADER] [OK] Encoders ({kota}) dimuat")
     else:
         result['encoders'] = {}
     
