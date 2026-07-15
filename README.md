@@ -1,66 +1,50 @@
-# 🏡 Prediksi Harga Rumah (Jakarta, Surabaya, Lumajang)
+<div align="center">
 
-Aplikasi web berbasis Machine Learning untuk memprediksi harga rumah di 3 kota: Jakarta, Surabaya, dan Lumajang. Aplikasi ini menggunakan data historis properti untuk melatih model dan memberikan estimasi harga berdasarkan spesifikasi rumah (luas tanah, jumlah kamar, dll).
+# Prediksi Harga Rumah
 
-## 🚀 Fitur Utama
+**Model Machine Learning Regresi Linear**
 
-- **Prediksi Harga Cepat**: Dapatkan estimasi harga rumah hanya dengan memasukkan beberapa spesifikasi (luas tanah, kamar tidur, kamar mandi, sertifikat, dll).
-- **Tiga Kota Tersedia**: Mendukung prediksi untuk wilayah Jakarta, Surabaya, dan Lumajang.
-- **Multiple Models**: Menggunakan 3 algoritma Machine Learning terbaik:
-  - **Random Forest** (Akurasi Tinggi, Feature Importance)
-  - **Linear Regression** (Sederhana, Cepat)
-  - **Neural Network / Deep Learning** (Menangkap pola kompleks)
-- **Dashboard Interaktif**: Dibangun menggunakan Streamlit untuk antarmuka yang bersih dan mudah digunakan.
-- **Visualisasi Data (EDA)**: Lihat langsung grafik dan sebaran data dari dataset yang digunakan.
-- **Web Scraper Bawaan**: Dilengkapi dengan bot Selenium untuk mengambil data rumah secara otomatis dari Rumah123.
+[![Python](https://img.shields.io/badge/Language-Python-3776AB?style=flat-square&logo=python)](https://www.python.org/)
+[![Scikit-Learn](https://img.shields.io/badge/Library-Scikit_Learn-F7931E?style=flat-square&logo=scikit-learn)](https://scikit-learn.org/)
+[![Pandas](https://img.shields.io/badge/Library-Pandas-150458?style=flat-square&logo=pandas)](https://pandas.pydata.org/)
 
-## 🛠️ Teknologi yang Digunakan
+</div>
 
-- **Bahasa Utama**: Python 3
-- **Web Framework**: Streamlit
-- **Machine Learning**: Scikit-Learn, TensorFlow/Keras
-- **Data Processing**: Pandas, NumPy
-- **Visualisasi**: Plotly, Matplotlib, Seaborn
-- **Web Scraping**: Selenium
+---
 
-## 📂 Struktur Direktori Utama
+## PROJECT OVERVIEW
 
-- `app.py`: File utama untuk menjalankan dashboard Streamlit.
-- `scraper_lumajang.py`: Script bot Selenium untuk mengambil data rumah area Lumajang.
-- `dataset/`: Berisi dataset mentah dan bersih untuk masing-masing kota.
-- `notebook/`: Berisi Jupyter Notebook untuk proses pembersihan data, eksplorasi (EDA), dan pelatihan model di Google Colab.
-- `models/`: Folder untuk menyimpan hasil model yang sudah dilatih (`.pkl` dan `.h5`).
-- `penjelasan/`: Dokumentasi lengkap mengenai struktur folder, cara kerja frontend/backend, dataset, dll.
+Proyek akhir mata kuliah Data Science. Repositori ini berisi model *Machine Learning* yang menerapkan algoritma *Linear Regression* untuk memprediksi fluktuasi harga properti berdasarkan berbagai fitur determinan seperti luas wilayah, jumlah kamar, dan lokasi geografis.
 
-## ⚙️ Cara Menjalankan Project
+## KEY FEATURES
 
-### 1. Prasyarat
-- Python 3.8+
-- (Opsional) Google Chrome & ChromeDriver jika ingin menjalankan scraper.
+- **Data Preprocessing:** Pembersihan data, normalisasi, dan penanganan nilai yang hilang secara otomatis.
+- **Model Training:** Algoritma Regresi Linear untuk analisis regresi multivariabel.
+- **Evaluation Metrics:** Evaluasi kinerja model menggunakan MSE, RMSE, dan R-squared score.
+- **Data Visualization:** Representasi visual korelasi antar variabel dengan grafik terstruktur.
 
-### 2. Instalasi
-Buka terminal di folder project dan jalankan:
+## TECHNOLOGY STACK
+
+- **Language:** Python 3.x
+- **Data Manipulation:** Pandas, NumPy
+- **Machine Learning:** Scikit-Learn
+- **Visualization:** Matplotlib, Seaborn
+
+## GETTING STARTED
+
+**Prerequisites:** Python 3.8+
+
 ```bash
+# Clone repository
+git clone https://github.com/AbdurRouf05/prediksi_harga_rumah.git
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+
+# Install dependencies
 pip install -r requirements.txt
+
+# Run the notebook or training script
+python train.py
 ```
-
-### 3. Menjalankan Dashboard
-```bash
-streamlit run app.py
-```
-Website akan terbuka secara otomatis di `http://localhost:8501`.
-
-*(Catatan: Pastikan model `.pkl` dan `.h5` sudah ada di folder `models/`. Jika belum, Anda harus melatih model menggunakan notebook yang disediakan.)*
-
-## 📚 Penjelasan Lengkap (Dokumentasi)
-
-Jika Anda ingin memahami project ini lebih dalam, silakan baca dokumentasi di folder `penjelasan/`:
-- [01. Gambaran Umum Project](penjelasan/01_GAMBARAN_UMUM_PROJECT.md)
-- [02. Struktur Folder](penjelasan/02_STRUKTUR_FOLDER.md)
-- [03. Penjelasan Kode Backend](penjelasan/03_PENJELASAN_KODE_BACKEND.md)
-- [04. Penjelasan Kode Frontend](penjelasan/04_PENJELASAN_KODE_FRONTEND.md)
-- [05. Penjelasan Notebook](penjelasan/05_PENJELASAN_NOTEBOOK.md)
-- [06. Penjelasan Dataset](penjelasan/06_PENJELASAN_DATASET.md)
-- [07. Cara Menjalankan](penjelasan/07_CARA_MENJALANKAN.md)
-- [08. Penjelasan Scraper](penjelasan/08_PENJELASAN_SCRAPER.md)
-- [09. Glosarium & Tips Sidang](penjelasan/09_GLOSARIUM_DAN_TIPS_SIDANG.md)
